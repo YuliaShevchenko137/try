@@ -17,6 +17,15 @@
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <rulesets>
+                        <ruleset>${session.executionRootDirectory}${file.separator}ruleset.xml</ruleset>
+                    </rulesets>
+                    <targetJdk>${java.version}</targetJdk>
+                    <includeTests>true</includeTests>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <verbose>true</verbose>
+                </configuration>
             </plugin>
             <plugin>
                 <inherited>true</inherited>
@@ -30,10 +39,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.tngtech.java</groupId>
-            <artifactId>junit-dataprovider</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

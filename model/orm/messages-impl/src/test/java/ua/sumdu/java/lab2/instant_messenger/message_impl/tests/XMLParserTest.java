@@ -37,18 +37,15 @@ public class XMLParserTest {
         MessageMapImpl map = new MessageMapImpl();
         for (Message mess : messages) {
             map.addMessage(mess);
-        }
-        Object[][] res = {{map}};
-        return res;
+        }return new Object[][]{{map}};
     }
 
     @Test
     @UseDataProvider("data")
-    public void writeAndReadFile(MessageMapImpl map) throws Exception {
-        XMLParser XML_Parser = XMLParser.INSTANCE;
+    public void writeAndReadFile(MessageMapImpl map) throws IOException {
         File file = File.createTempFile("file","test");
-        XML_Parser.write(map, file);
-        MessageMapImpl newMap = (MessageMapImpl) XML_Parser.read(file);
+        XMLParser.INSTANCE.write(map, file);
+        MessageMapImpl newMap = (MessageMapImpl) XMLParser.INSTANCE.read(file);
         assertTrue(map.equals(newMap));
         file.deleteOnExit();
     }

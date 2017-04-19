@@ -78,18 +78,6 @@ public class ParsingTest {
   }
 
   @Test
-  public void getFriends() {
-    User newUser = User.getEmptyUser();
-    UserMapImpl friends = (UserMapImpl) UserMapParserImpl.getInstance().getFriends();
-    friends.addUser(newUser);
-    UserMapParserImpl.getInstance().writeUserMapToFile(UserMapParserImpl.getInstance().userMapToJSonString(friends));
-    UserMapImpl newMap = (UserMapImpl) UserMapParserImpl.getInstance().getFriends();
-    assertEquals(friends, newMap);
-    friends.removeUser(newUser);
-    UserMapParserImpl.getInstance().writeUserMapToFile(UserMapParserImpl.getInstance().userMapToJSonString(friends));
-  }
-
-  @Test
   public void getEmptyGroups() {
     GroupMapImpl groupMap = (GroupMapImpl) GroupMapParserImpl.getInstance().jsonStringToGroupMap("");
     assertEquals(groupMap, new GroupMapImpl());

@@ -3,11 +3,13 @@ package ua.sumdu.java.lab2.messenger.listener.test;
 import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.when;
-import static ua.sumdu.java.lab2.messenger.entities.User.CURRENT_USER;
 
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.junit.Test;
@@ -51,21 +53,16 @@ public class MockitoSocketTest {
     User newUser = UserCreatorImpl.INSTANCE.createUser(CategoryUsers.FRIEND, "test_user", "test_user@go.com",
         InetAddress.getLocalHost(), 8048);
     String request = RequestType.ADD_TO_FRIENDS.getRequestNumber() + "=" + newUser.toJSonString();
-    // initialize server
     MultiThreadedServerImpl multiThreadedServer = spy(new MultiThreadedServerImpl());
     ServerSocket server = mock(ServerSocket.class);
     doReturn(server).when(multiThreadedServer).startServet();
-    multiThreadedServer.setTest(true);
     multiThreadedServer.start();
-    // initialise sockets
     Socket connectedClient = mock(Socket.class);
-    // initialize streams
     InputStream ccis = new ByteArrayInputStream(request.getBytes());
     PipedOutputStream ccos = new PipedOutputStream();
     PipedInputStream mcis = new PipedInputStream(ccos);
     when(connectedClient.getOutputStream()).thenReturn(ccos);
     when(connectedClient.getInputStream()).thenReturn(ccis);
-    // initialise connection
     when(server.accept()).thenReturn(connectedClient);
     BufferedReader in = new BufferedReader(new InputStreamReader(mcis));
     String response = "";
@@ -74,7 +71,14 @@ public class MockitoSocketTest {
       response = response + iterator.nextLine() + "\n";
     }
     assertEquals(response, ResponseType.ADDED_TO_FRIENDS.getResponseNumber()
-        + "=" + CURRENT_USER.setCategory(CategoryUsers.FRIEND).toJSonString() + "\n");
+        + "=" + User.getCurrentUser().setCategory(CategoryUsers.FRIEND).toJSonString() + "\n");
   }
 
+  @Test
+  public void getExecutor() {
+    MultiThreadedServerImpl multiThreadedServer = new MultiThreadedServerImpl();
+    ExecutorService service = Executors.newCachedThreadPool();
+    multiThreadedServer.setService(service);
+    assertEquals(multiThreadedServer.getService(),  multiThreadedServer.getService());
+  }
 }

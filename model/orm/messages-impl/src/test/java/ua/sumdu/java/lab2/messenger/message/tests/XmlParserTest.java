@@ -1,5 +1,6 @@
 package ua.sumdu.java.lab2.messenger.message.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static ua.sumdu.java.lab2.messenger.entities.CategoryUsers.BLACKLIST;
 import static ua.sumdu.java.lab2.messenger.entities.CategoryUsers.FRIEND;
@@ -11,11 +12,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.w3c.dom.Document;
 import ua.sumdu.java.lab2.messenger.entities.Message;
 import ua.sumdu.java.lab2.messenger.entities.MessageMapImpl;
 import ua.sumdu.java.lab2.messenger.entities.User;
+import ua.sumdu.java.lab2.messenger.parsers.ParsingMessages;
 import ua.sumdu.java.lab2.messenger.parsers.XmlParser;
 
 @RunWith(DataProviderRunner.class)
@@ -48,5 +53,21 @@ public class XmlParserTest {
     MessageMapImpl newMap = (MessageMapImpl) XmlParser.INSTANCE.read(file);
     assertTrue(map.equals(newMap));
     file.deleteOnExit();
+  }
+
+  @Test
+  public void loadXmlFromString() throws IOException, ParserConfigurationException {
+    Message firstMessage = new Message("user1", "user2", "text1",
+        LocalDateTime.now());
+    Document doc = DocumentBuilderFactory
+        .newInstance()
+        .newDocumentBuilder()
+        .getDOMImplementation()
+        .createDocument(null, null, null);
+    XmlParser.INSTANCE.addMessage(null, firstMessage, doc);
+    String str = XmlParser.INSTANCE.toXml(doc);
+    Document newDoc = XmlParser.loadXmlFromString(str);
+    Message message = ParsingMessages.parseMessage(newDoc.getFirstChild());
+    assertEquals(firstMessage, message);
   }
 }

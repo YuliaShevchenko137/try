@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
@@ -35,6 +36,12 @@ public class ClientImpl extends Thread implements Client {
   public void run() {
     if (isConnect) {
       String response = interactionWithServer();
+      if (response == null) {
+        ResponseGeneratingImpl responseGenerating = new ResponseGeneratingImpl();
+        ResponseParsingImpl responseParsing = new ResponseParsingImpl();
+        responseParsing.responseParsing(responseGenerating.userIsOffline(adr.getHostAddress()));
+        return;
+      }
       ResponseParsingImpl responseParsing = new ResponseParsingImpl();
       String context = responseParsing.responseParsing(response);
       if (!"".equals(context)) {
@@ -65,6 +72,7 @@ public class ClientImpl extends Thread implements Client {
   @Override
   public String interactionWithServer() {
     try {
+      socket.setSoTimeout(1800000);
       OutputStream out = socket.getOutputStream();
       out.write(request.getBytes());
       out.flush();
@@ -79,9 +87,9 @@ public class ClientImpl extends Thread implements Client {
       out.close();
       in.close();
       return response.toString();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
+    } catch (IOException | IllegalStateException e) {
+      LOG.error(e.getMessage());
+      return null;
     }
-    return "";
   }
 }

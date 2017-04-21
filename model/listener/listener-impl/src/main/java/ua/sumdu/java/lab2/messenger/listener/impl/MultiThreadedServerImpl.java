@@ -23,7 +23,7 @@ import ua.sumdu.java.lab2.messenger.listener.api.MultiThreadedServer;
 
 public class MultiThreadedServerImpl extends Thread implements MultiThreadedServer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ClientImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MultiThreadedServerImpl.class);
 
   public MultiThreadedServerImpl() {
     this.service = Executors.newCachedThreadPool();
@@ -50,7 +50,7 @@ public class MultiThreadedServerImpl extends Thread implements MultiThreadedServ
         service.submit(() -> { processingRequest(clientSocket);
         });
       } catch (IOException e) {
-        LOG.error("Error accepting client connection", e);
+        LOG.error("Error accepting client connection");
       }
     }
   }
@@ -66,8 +66,7 @@ public class MultiThreadedServerImpl extends Thread implements MultiThreadedServ
       while (iterator.hasNext()) {
         request.append(iterator.nextLine());
       }
-      RequestParsingImpl requestParsing = spy(new RequestParsingImpl());
-      doReturn(true).when(requestParsing).getReaction(anyString(), anyString());
+      RequestParsingImpl requestParsing = new RequestParsingImpl();
       String result = requestParsing.requestParser(request.toString());
       ResponseGeneratingImpl responseGenerating = new ResponseGeneratingImpl();
       output.write(responseGenerating.responseGenerate(result).getBytes());

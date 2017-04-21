@@ -4,16 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -21,9 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.sumdu.java.lab2.messenger.api.UserMap;
 import ua.sumdu.java.lab2.messenger.entities.*;
-import ua.sumdu.java.lab2.messenger.handler.api.RequestGenerating;
 import ua.sumdu.java.lab2.messenger.handler.processing.RequestGeneratingImpl;
 import ua.sumdu.java.lab2.messenger.listener.impl.ClientImpl;
 import ua.sumdu.java.lab2.messenger.parsers.XmlParser;
@@ -79,9 +72,9 @@ public class MainController {
     }
     tabMap = new TreeMap<>();
     tabMap.put("system", systemMessages);
-    initFriends();
-    initGroups();
-    initBlackList();
+    Initialize.initFriends(friendsList);
+    Initialize.initGroups(groupList);
+    Initialize.initBlackList(blackList);
     blockButton.setVisible(false);
     restore.setVisible(false);
     friendsList.getSelectionModel().selectedItemProperty().addListener(
@@ -90,31 +83,22 @@ public class MainController {
     blackList.getSelectionModel().selectedItemProperty().addListener(
         (observableValue, oldValue,
          newValue) -> restore.setVisible(true));
-    updateMessages(systemMessages, "system");
+    Initialize.updateMessages(systemMessages, "system");
     TimerTask timerTask = new TimerTask() {
       @Override
       public void run() {
         Platform.runLater(() -> {
-          initFriends();
-          initGroups();
-          initBlackList();
+          Initialize.initFriends(friendsList);
+          Initialize.initGroups(groupList);
+          Initialize.initBlackList(blackList);
           for (String chatName : tabMap.keySet()) {
-            updateMessages(tabMap.get(chatName), chatName);
+            Initialize.updateMessages(tabMap.get(chatName), chatName);
           }
         });
       }
     };
     timer = new Timer();
     timer.scheduleAtFixedRate(timerTask, 0, 900);
-  }
-
-  private void initBlackList() {
-    UserMapImpl blackListUsers = (UserMapImpl) UserMapParserImpl.getInstance().getBlackList();
-    ObservableList<String> list = FXCollections.observableArrayList();
-    for (User user : blackListUsers.getMap().values()) {
-      list.add(user.getUsername());
-    }
-    blackList.setItems(list);
   }
 
   private void showMessages(String name) {
@@ -147,45 +131,7 @@ public class MainController {
       });
       tabPane.getSelectionModel().select(newTab);
     }
-    updateMessages(tabMap.get(name), name);
-  }
-
-  private synchronized void updateMessages(ListView<String> chat, String groupName) {
-    File messages = new File(User.getUrlMessageDirectory() + File.separator + groupName + ".xml");
-    MessageMapImpl messageMap = (MessageMapImpl) XmlParser.INSTANCE.read(messages);
-    ObservableList<String> list = FXCollections.observableArrayList();
-    for (Message message : messageMap.getMapForMails().values()) {
-      String result = message.getSender() + ": " + message.getText() + "  (" + message.getTimeSending() + ")";
-      list.add(result);
-    }
-    try {
-      chat.setItems(list);
-    } catch (IllegalStateException e) {
-      LOG.error(e.getMessage());
-    }
-  }
-
-  private void initGroups() {
-    GroupMapImpl groups = (GroupMapImpl) GroupMapParserImpl.getInstance().getGroupMap();
-    Set<String> groupNames = groups.getMap().keySet();
-    ObservableList<String> list = FXCollections.observableArrayList();
-    for (String groupName : groupNames) {
-      if (groups.getMap().get(groupName).getMap().size() != 0) {
-        list.add(groupName);
-      }
-    }
-    groupList.setItems(list);
-  }
-
-  private void initFriends() {
-    UserMapImpl friends = (UserMapImpl) UserMapParserImpl.getInstance().getFriends();
-    ObservableList<String> list = FXCollections.observableArrayList();
-    for (User user : friends.getMap().values()) {
-      if (!user.getCategory().name().equals(CategoryUsers.EMPTY_USER.name())
-          && !user.getCategory().name().equals(CategoryUsers.CURRENT_USER.name()))
-      list.add(user.getUsername());
-    }
-    friendsList.setItems(list);
+    Initialize.updateMessages(tabMap.get(name), name);
   }
 
   public void sentMessage() {
@@ -244,7 +190,7 @@ public class MainController {
     stage.setScene(new Scene(root, 450, 250));
     stage.setResizable(false);
     stage.showAndWait();
-    updateMessages(systemMessages, "system");
+    Initialize.updateMessages(systemMessages, "system");
   }
 
   public void newGroup() {
@@ -257,7 +203,7 @@ public class MainController {
       GroupMapImpl groups = (GroupMapImpl) GroupMapParserImpl.getInstance().getGroupMap();
       groups.addUser(result.get(), User.getCurrentUser().setCategory(CategoryUsers.ADMIN));
       GroupMapParserImpl.getInstance().writeGroupMapToFile(GroupMapParserImpl.getInstance().groupMapToJSonString(groups));
-      initGroups();
+      Initialize.initGroups(groupList);
     }
   }
 
@@ -285,9 +231,9 @@ public class MainController {
       }
     }
     UserMapParserImpl.getInstance().writeUserMapToFile(UserMapParserImpl.getInstance().userMapToJSonString(friends));
-    initFriends();
+    Initialize.initFriends(friendsList);
     UserMapParserImpl.getInstance().writeBlackListToFile(UserMapParserImpl.getInstance().userMapToJSonString(blackListUsers));
-    initBlackList();
+    Initialize.initBlackList(blackList);
     for (Tab tab : tabPane.getTabs()) {
       if (tab.getText().equals(username)) {
         tabPane.getTabs().remove(tab);
@@ -310,8 +256,8 @@ public class MainController {
       }
     }
     UserMapParserImpl.getInstance().writeUserMapToFile(UserMapParserImpl.getInstance().userMapToJSonString(friends));
-    initFriends();
+    Initialize.initFriends(friendsList);
     UserMapParserImpl.getInstance().writeBlackListToFile(UserMapParserImpl.getInstance().userMapToJSonString(blackListUsers));
-    initBlackList();
+    Initialize.initBlackList(blackList);
   }
 }

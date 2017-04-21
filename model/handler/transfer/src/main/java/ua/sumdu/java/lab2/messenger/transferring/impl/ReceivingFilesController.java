@@ -26,6 +26,7 @@ public class ReceivingFilesController {
 
   private String name;
 
+
   public SentFiles getNewFileList() {
     return newFileList;
   }
@@ -39,9 +40,11 @@ public class ReceivingFilesController {
   }
 
   public void buttonRemote(ActionEvent actionEvent) {
+    System.out.println(sentFiles.toString());
   }
 
   public void buttonOk(ActionEvent actionEvent) {
+    System.out.println(name);
   }
 
   public void setName(String name) {

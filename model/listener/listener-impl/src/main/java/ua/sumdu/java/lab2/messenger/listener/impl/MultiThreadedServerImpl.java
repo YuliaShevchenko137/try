@@ -1,9 +1,5 @@
 package ua.sumdu.java.lab2.messenger.listener.impl;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

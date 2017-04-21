@@ -1,12 +1,10 @@
 package ua.sumdu.java.lab2.messenger.main;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.sumdu.java.lab2.messenger.api.Settings;
 import ua.sumdu.java.lab2.messenger.controllers.MainController;
 import ua.sumdu.java.lab2.messenger.controllers.NewUserRegistrationController;
 import ua.sumdu.java.lab2.messenger.entities.User;

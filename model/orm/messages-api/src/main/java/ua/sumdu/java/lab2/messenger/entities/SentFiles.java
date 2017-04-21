@@ -67,8 +67,12 @@ public class SentFiles {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null || getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
     SentFiles sentFiles = (SentFiles) obj;
     return Objects.equals(arrayList, sentFiles.arrayList);
   }
@@ -104,10 +108,10 @@ public class SentFiles {
       this.path = path;
       this.name = name;
       this.size = size;
-      shortSize = shortSize();
+      shortSize = stringShortSize();
     }
 
-    private String shortSize() {
+    private String stringShortSize() {
       final int bytes = (int) size;
       final int kilobytes = bytes / 1024;
       final int megabytes = kilobytes / 1024;

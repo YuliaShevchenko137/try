@@ -26,6 +26,8 @@ import ua.sumdu.java.lab2.messenger.transferring.impl.DataTransferImpl;
 public class RequestParsingImpl implements RequestParsing {
   private static final Logger LOG = LoggerFactory.getLogger(RequestParsingImpl.class);
 
+  private static final String USER = "user";
+
   @Override
   public String requestParser(String string) {
     int requestType = Integer.parseInt(string.substring(0,4));
@@ -59,7 +61,7 @@ public class RequestParsingImpl implements RequestParsing {
   private String adding(int requestType, String context) {
     if (requestType == ADD_TO_FRIENDS.getRequestNumber()) {
       boolean usersReaction;
-      usersReaction = getReaction(context, "user");
+      usersReaction = getReaction(context, USER);
       if (usersReaction) {
         addNewFriend(context);
         return String.valueOf(ADDED_TO_FRIENDS.getResponseNumber());
@@ -84,7 +86,7 @@ public class RequestParsingImpl implements RequestParsing {
     if (requestType > 5999 && requestType <= 6999) {
       return dataRequests(requestType, context);
     } else if (requestType == NEW_MESSAGE.getRequestNumber()) {
-      newMessage(context, "user");
+      newMessage(context, USER);
       return String.valueOf(SUCCESSFUL.getResponseNumber());
     } else if (requestType == NEW_MESSAGE_TO_GROUP.getRequestNumber()) {
       newMessage(context, "group");
@@ -141,7 +143,7 @@ public class RequestParsingImpl implements RequestParsing {
     Message message = ParsingMessages.parseMessage(doc.getFirstChild());
     String fileName;
     UserMapImpl users;
-    if ("user".equals(type)) {
+    if (USER.equals(type)) {
       fileName = message.getSender();
       users = (UserMapImpl) UserMapParserImpl.getInstance().getFriends();
     } else {
@@ -181,7 +183,7 @@ public class RequestParsingImpl implements RequestParsing {
     int time = 0;
     Platform.runLater(() -> {
       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-      if ("user".equals(groupOrUser)) {
+      if (USER.equals(groupOrUser)) {
         User user = UserCreatorImpl.INSTANCE.toUser(context);
         alert.setTitle("Add to friends");
         alert.setContentText("User " + user.getUsername() + " sent a request to add to friends. \n Do you want to add the user " + user.getUsername() + " as a friend?");

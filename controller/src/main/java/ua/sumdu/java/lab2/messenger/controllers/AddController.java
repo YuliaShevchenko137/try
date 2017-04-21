@@ -1,5 +1,9 @@
 package ua.sumdu.java.lab2.messenger.controllers;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,12 +21,6 @@ import ua.sumdu.java.lab2.messenger.entities.UserMapImpl;
 import ua.sumdu.java.lab2.messenger.handler.processing.RequestGeneratingImpl;
 import ua.sumdu.java.lab2.messenger.listener.impl.ClientImpl;
 import ua.sumdu.java.lab2.messenger.processing.GroupMapParserImpl;
-import ua.sumdu.java.lab2.messenger.processing.UserCreatorImpl;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AddController {
   private static final Logger LOG = LoggerFactory.getLogger(AddController.class);
@@ -48,7 +46,7 @@ public class AddController {
   @FXML
   public Label error;
 
-  private String ipRegExp = "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$";
+  private static final String IP_REG_EXP = "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$";
 
   @FXML
   public final void initialize() {
@@ -61,26 +59,25 @@ public class AddController {
     if (!validateIpAddress(stringIP)) {
       LOG.warn("Invalid IP-address");
       error.setText("Invalid IP-address\n");
-    } else {
-      error.setText("");
-      try {
-        InetAddress ipAddress = InetAddress.getByName(stringIP);
-        workWithClient(ipAddress);
-      } catch (UnknownHostException e) {
-        LOG.error(e.getMessage(), e);
-      }
-      Node source = (Node) actionEvent.getSource();
-      Stage stage = (Stage) source.getScene().getWindow();
-      stage.close();
-      Platform.runLater(() -> {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText("Successful");
-        alert.setContentText("Your request was successfully sent.");
-        alert.show();
-      });
+      return;
     }
-
+    error.setText("");
+    try {
+      InetAddress ipAddress = InetAddress.getByName(stringIP);
+      workWithClient(ipAddress);
+    } catch (UnknownHostException e) {
+      LOG.error(e.getMessage(), e);
+    }
+    Node source = (Node) actionEvent.getSource();
+    Stage stage = (Stage) source.getScene().getWindow();
+    stage.close();
+    Platform.runLater(() -> {
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Information");
+      alert.setHeaderText("Successful");
+      alert.setContentText("Your request was successfully sent.");
+      alert.show();
+    });
   }
 
   private void workWithClient(InetAddress inetAddress) {
@@ -96,7 +93,7 @@ public class AddController {
   }
 
   private boolean validateIpAddress(String str) {
-    Pattern pattern = Pattern.compile(ipRegExp);
+    Pattern pattern = Pattern.compile(IP_REG_EXP);
     Matcher matcher = pattern.matcher(str);
     return matcher.matches();
   }

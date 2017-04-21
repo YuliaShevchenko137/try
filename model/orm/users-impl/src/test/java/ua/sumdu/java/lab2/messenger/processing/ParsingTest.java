@@ -61,7 +61,7 @@ public class ParsingTest {
     assertTrue(newGroupMap.equals(groupMap));
   }
 
-  @Test
+ /* @Test
   public void gerCurrentGroups() {
     GroupMapImpl groups = (GroupMapImpl) GroupMapParserImpl.getInstance().getGroupMap();
     User newUser = User.getEmptyUser();
@@ -75,7 +75,7 @@ public class ParsingTest {
     assertEquals(userMap, correctUserMap);
     newGroup.getMap().remove("test");
     GroupMapParserImpl.getInstance().writeGroupMapToFile(GroupMapParserImpl.getInstance().groupMapToJSonString(newGroup));
-  }
+  }*/
 
   @Test
   public void getEmptyGroups() {

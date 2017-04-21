@@ -96,7 +96,7 @@ public class DataTransferImpl implements DataTransfer {
     Platform.runLater(() -> {
       Stage stage = new Stage();
       FXMLLoader receivingFilesFxmlLoader = new FXMLLoader();
-      receivingFilesFxmlLoader.setLocation(getClass().getResource("../ua/sumdu/java/lab2/messenger/transferring/ReceivingFiles.fxml"));
+      receivingFilesFxmlLoader.setLocation(getClass().getResource("../ReceivingFiles.fxml"));
       Parent root = null;
       try {
         root = receivingFilesFxmlLoader.load();

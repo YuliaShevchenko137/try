@@ -1,10 +1,17 @@
 package ua.sumdu.java.lab2.messenger.api;
 
+import javafx.collections.ObservableList;
 import ua.sumdu.java.lab2.messenger.entities.User;
 
-public interface UserMap {
-  
-  void addUser(User user);
+import java.util.Map;
 
-  void removeUser(User user);
+public interface UserMap {
+
+    Map<String, User> getMap();
+    
+    void addUser(User user);
+
+    void removeUser(User user);
+
+    ObservableList<User> getAllUsers();
 }

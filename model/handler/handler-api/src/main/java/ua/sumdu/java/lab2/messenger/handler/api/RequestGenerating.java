@@ -1,25 +1,20 @@
 package ua.sumdu.java.lab2.messenger.handler.api;
 
-import ua.sumdu.java.lab2.messenger.entities.Message;
 import ua.sumdu.java.lab2.messenger.entities.SentFiles;
 
 public interface RequestGenerating {
 
-  String addToFriends();
+    String creatingFriendsRequest();
 
-  String addToGroup(String groupName);
+    String createJoinRequestToGroup(String groupName);
 
-  String newMessage(Message message);
+    String updateGroupList(String groupName);
 
-  String newMessageToGroup(Message message);
+    String createRequestForUpdateGroupList(String groupName);
 
-  String updateGroupList(String groupName);
+    String createDataRequest(SentFiles files);
 
-  String requestForUpdateGroupList(String groupName);
+    String creatingDeleteRequestFromFriends();
 
-  String messagesFromSpecificDate(long date);
-
-  String groupMessagesFromSpecificDate(long date, String groupName);
-
-  String dataRequest(SentFiles files);
+    String creatingDeleteRequestFromGroup(String groupName);
 }

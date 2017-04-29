@@ -93,7 +93,7 @@ public class ResponseParsingImplTest {
 
     @Test
     public void addedToGroup() {
-        User testUser = User.getCurrentUser();
+        User testUser = User.getEmptyUser().setUsername("user1");
         GroupMapImpl currentGroups = (GroupMapImpl) GroupMapParserImpl.getInstance().getGroupMap();
         GroupMapImpl newGroup = new GroupMapImpl();
         String chatName = "testGroup";

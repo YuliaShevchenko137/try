@@ -1,5 +1,6 @@
 package ua.sumdu.java.lab2.messenger.handler.test;
 
+import static java.net.InetAddress.getLocalHost;
 import static ua.sumdu.java.lab2.messenger.handler.entities.RequestType.*;
 
 import com.tngtech.java.junit.dataprovider.DataProvider;
@@ -32,8 +33,16 @@ public class RequestParsingImplTest {
 
     private RequestGeneratingImpl requestGenerating;
     private final RequestParsingImpl requestParsing = new RequestParsingImpl();
-    private static final User TEST_USER = new User(CategoryUsers.BLACKLIST, "test_user", "test_user@ex.so",
-    8080, User.getCurrentUser().getIpAddress());
+    private static User TEST_USER;
+
+    static {
+        try {
+            TEST_USER = new User(CategoryUsers.BLACKLIST, "test_user", "test_user@ex.so",
+                    8080, getLocalHost());
+        } catch (UnknownHostException e) {
+            TEST_USER = User.getEmptyUser();
+        }
+    }
 
     /**
      * Return test group.
@@ -41,11 +50,11 @@ public class RequestParsingImplTest {
     @DataProvider
     public static Object[][] groupForTest() throws UnknownHostException {
         User[] users = {new User(CategoryUsers.FRIEND, "user1", "user1@ex.so", 8080,
-        InetAddress.getLocalHost()), new User(CategoryUsers.BLACKLIST, "user2", "user2@ex.so",
-            8080, InetAddress.getLocalHost()), new User(CategoryUsers.BLACKLIST, "user3", "user3@ex.so",
-            8080, InetAddress.getLocalHost()), new User(CategoryUsers.BLACKLIST, "user4", "user4@ex.so",
-            8080, InetAddress.getLocalHost()), new User(CategoryUsers.BLACKLIST, "user5", "user5@ex.so",
-            8080, InetAddress.getLocalHost())};
+        getLocalHost()), new User(CategoryUsers.BLACKLIST, "user2", "user2@ex.so",
+            8080, getLocalHost()), new User(CategoryUsers.BLACKLIST, "user3", "user3@ex.so",
+            8080, getLocalHost()), new User(CategoryUsers.BLACKLIST, "user4", "user4@ex.so",
+            8080, getLocalHost()), new User(CategoryUsers.BLACKLIST, "user5", "user5@ex.so",
+            8080, getLocalHost())};
         UserMapImpl userMap = new UserMapImpl();
         String nameChat = "test1";
         for (User user : users) {

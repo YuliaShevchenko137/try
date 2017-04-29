@@ -8,6 +8,8 @@ import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +36,13 @@ public class ResponseParsingImplTest {
 
     @DataProvider
     public static Object[][] messages() throws UnknownHostException {
-        return ResponseGeneratingImplTest.messages();
+        String username = "this_user";
+        String testUser = "testUser";
+        Message[] messages =    {new Message(testUser, username, "text1", LocalDateTime.now()),
+                new Message(testUser, username, "text2", LocalDateTime.now().minusDays(1)),
+                new Message(testUser, username, "text3", LocalDateTime.now().minusDays(2)),
+                new Message(testUser, username, "text4", LocalDateTime.now().minusDays(3))};
+        return new Object[][]{{messages}};
     }
 
     @Test
